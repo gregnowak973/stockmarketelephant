@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stock Market Elephant</title>
+<meta name="description" content="Honest math for prop-firm futures trading: expected-value calculators, scaling playbooks, and the numbers nobody shows you.">
+<style>
+  :root {
+    --bg: #0f1115; --panel: #181b22; --border: #2a2f3a; --text: #e6e9ef;
+    --muted: #8b93a3; --green: #22c55e; --red: #ef4444; --accent: #60a5fa;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 16px/1.6 -apple-system, "Segoe UI", sans-serif; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 48px 20px 80px; }
+  .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
+  .brand .mark { font-size: 34px; }
+  .brand .name { font-weight: 800; font-size: 19px; letter-spacing: .02em; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 0 0 14px; max-width: 18ch; }
+  .lede { font-size: 17px; color: var(--muted); max-width: 52ch; margin-bottom: 36px; }
+  .card { display: block; background: var(--panel); border: 1px solid var(--border);
+          border-radius: 12px; padding: 20px 22px; margin-bottom: 14px;
+          text-decoration: none; color: var(--text); transition: border-color .15s; }
+  .card:hover { border-color: var(--accent); }
+  .card h2 { font-size: 17px; margin: 0 0 6px; }
+  .card p { margin: 0; font-size: 14px; color: var(--muted); max-width: 60ch; }
+  .card .go { color: var(--accent); font-size: 13px; font-weight: 600; }
+  .footer { margin-top: 48px; border-top: 1px solid var(--border); padding-top: 18px;
+            font-size: 12.5px; color: var(--muted); max-width: 62ch; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><span class="mark">🐘</span><span class="name">STOCK MARKET ELEPHANT</span></div>
+  <h1>The prop-firm math nobody shows you.</h1>
+  <p class="lede">Evaluations are a product. Payouts are a probability. Before you buy
+  another combine, run the actual numbers — win rate, drawdown rules, reset fees,
+  payout gates — through a Monte Carlo and see what your plan is really worth.</p>
+
+  <a class="card" href="ev.html">
+    <h2>Prop Firm EV Calculator</h2>
+    <p>Trade-level Monte Carlo of your strategy through an eval, a funded account, and a
+    full bankroll ladder. Editable rules, step-by-step math, and the breakeven trap most
+    traders never compute.</p>
+    <p class="go">Run the model →</p>
+  </a>
+
+  <a class="card" href="firms.html">
+    <h2>The Scaling Playbook</h2>
+    <p>The multi-firm sequencing strategy: start on $50K evals, recycle payouts into new
+    accounts, copy one signal everywhere. With the risk rules that keep ten losers from
+    killing an account.</p>
+    <p class="go">Read the playbook →</p>
+  </a>
+
+  <div class="footer">
+    Educational content only — nothing here is financial, investment, or trading advice,
+    and no performance is promised or implied. Futures trading involves substantial risk
+    of loss. Prop-firm rules change constantly; verify every number against the firm's
+    own site before spending money. © 2026 Stock Market Elephant.
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Scaling Playbook — Stock Market Elephant</title>
+<meta name="description" content="The multi-firm prop scaling strategy: start on $50K evals, recycle payouts into new accounts, copy one signal everywhere.">
+<style>
+  :root {
+    --bg: #0f1115; --panel: #181b22; --border: #2a2f3a; --text: #e6e9ef;
+    --muted: #8b93a3; --buy: #22c55e; --sell: #ef4444; --accent: #60a5fa;
+    --warn: #eab308;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.55 -apple-system, "Segoe UI", sans-serif; }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 28px 16px 60px; }
+  .top { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+  .top a { color: var(--muted); text-decoration: none; font-size: 13.5px; font-weight: 600; }
+  .top a:hover { color: var(--accent); }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 13.5px; margin-bottom: 20px; max-width: 66ch; }
+  .sub a { color: var(--accent); text-decoration: none; }
+  .stage { background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+           padding: 16px 18px; margin-bottom: 12px; }
+  .stage h2 { font-size: 14.5px; margin: 0 0 6px; display: flex; align-items: center; gap: 10px; }
+  .n { display: inline-flex; align-items: center; justify-content: center; width: 24px;
+       height: 24px; border-radius: 50%; background: var(--accent); color: #08101e;
+       font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .stage p { margin: 0 0 8px; font-size: 13.5px; color: var(--muted); max-width: 70ch; }
+  .stage p b { color: var(--text); }
+  .advance { border-left: 3px solid var(--buy); background: var(--bg);
+             border-radius: 0 6px 6px 0; padding: 7px 12px; font-size: 13px; }
+  .advance b { color: var(--buy); font-size: 11px; letter-spacing: .08em; }
+  .panel { background: var(--panel); border: 1px solid var(--border);
+           border-radius: 10px; padding: 16px 18px; margin: 20px 0 12px; }
+  .panel h2 { font-size: 14px; margin: 0 0 8px; }
+  .panel p, .panel li { font-size: 13.5px; color: var(--muted); max-width: 70ch; }
+  .panel p b, .panel li b { color: var(--text); }
+  ul { margin: 6px 0 0; padding-left: 20px; } li { margin-bottom: 6px; }
+  .databox { border-left: 3px solid var(--accent); background: var(--bg);
+             border-radius: 0 6px 6px 0; padding: 7px 12px; font-size: 13px; margin-top: 8px; }
+  .databox b { color: var(--accent); font-size: 11px; letter-spacing: .08em; }
+  .footer { margin-top: 40px; border-top: 1px solid var(--border); padding-top: 16px;
+            font-size: 12px; color: var(--muted); max-width: 64ch; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="index.html">🐘 Stock Market Elephant</a><span style="color:var(--border)">/</span>
+    <span style="font-size:13.5px;color:var(--text);font-weight:600">Scaling Playbook</span></div>
+  <h1>The prop-firm scaling playbook</h1>
+  <div class="sub">The multi-firm sequencing plan: start on $50K evaluations, pass one, and
+  let each payout fund the next account — never fresh capital after the first. One tested
+  edge, executed once, copied everywhere.</div>
+
+  <div class="panel">
+    <h2>The architecture: one master, copy everywhere</h2>
+    <p>Prove your edge on one <b>master account</b> first. Once it survives live, a trade
+    copier (e.g. PickMyTrade) mirrors every fill to accounts at other firms — one decision,
+    many payouts. Payouts recycle into more accounts.</p>
+    <svg viewBox="0 0 720 430" width="100%" style="display:block" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0L10,5L0,10z" fill="#8b93a3"/>
+        </marker>
+        <marker id="arrg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0L10,5L0,10z" fill="#22c55e"/>
+        </marker>
+      </defs>
+      <rect x="255" y="12" width="210" height="46" rx="9" fill="#181b22" stroke="#60a5fa" stroke-width="1.5"/>
+      <text x="360" y="31" text-anchor="middle" font-size="13" font-weight="700" fill="#e6e9ef">Your tested edge</text>
+      <text x="360" y="48" text-anchor="middle" font-size="11" fill="#8b93a3">backtested · paper-proven · rules-based</text>
+      <line x1="360" y1="58" x2="360" y2="86" stroke="#8b93a3" stroke-width="1.5" marker-end="url(#arr)"/>
+      <rect x="230" y="90" width="260" height="52" rx="9" fill="#16283f" stroke="#60a5fa" stroke-width="2"/>
+      <text x="360" y="112" text-anchor="middle" font-size="14" font-weight="700" fill="#e6e9ef">MASTER ACCOUNT</text>
+      <text x="360" y="130" text-anchor="middle" font-size="11" fill="#8b93a3">your first funded account — prove it here</text>
+      <line x1="360" y1="142" x2="360" y2="172" stroke="#8b93a3" stroke-width="1.5" marker-end="url(#arr)"/>
+      <rect x="272" y="176" width="176" height="40" rx="20" fill="#181b22" stroke="#2a2f3a"/>
+      <text x="360" y="194" text-anchor="middle" font-size="12.5" font-weight="600" fill="#e6e9ef">Trade copier</text>
+      <text x="360" y="209" text-anchor="middle" font-size="10.5" fill="#8b93a3">one fill in → same fill everywhere</text>
+      <line x1="300" y1="216" x2="105" y2="266" stroke="#8b93a3" stroke-width="1.5" marker-end="url(#arr)"/>
+      <line x1="335" y1="216" x2="278" y2="266" stroke="#8b93a3" stroke-width="1.5" marker-end="url(#arr)"/>
+      <line x1="385" y1="216" x2="442" y2="266" stroke="#8b93a3" stroke-width="1.5" marker-end="url(#arr)"/>
+      <line x1="420" y1="216" x2="615" y2="266" stroke="#8b93a3" stroke-width="1.5" marker-end="url(#arr)"/>
+      <g font-size="12" font-weight="700">
+        <rect x="20" y="270" width="170" height="58" rx="9" fill="#181b22" stroke="#2a2f3a"/>
+        <text x="105" y="292" text-anchor="middle" fill="#e6e9ef">1 · Tradeify Growth</text>
+        <text x="105" y="309" text-anchor="middle" font-size="10.5" font-weight="400" fill="#8b93a3">first copy · $500 min payout</text>
+        <rect x="198" y="270" width="160" height="58" rx="9" fill="#181b22" stroke="#2a2f3a"/>
+        <text x="278" y="292" text-anchor="middle" fill="#e6e9ef">2 · Lucid Flex/Pro</text>
+        <text x="278" y="309" text-anchor="middle" font-size="10.5" font-weight="400" fill="#8b93a3">funded by Tradeify payout</text>
+        <rect x="366" y="270" width="152" height="58" rx="9" fill="#181b22" stroke="#2a2f3a"/>
+        <text x="442" y="292" text-anchor="middle" fill="#e6e9ef">3 · MFF Pro</text>
+        <text x="442" y="309" text-anchor="middle" font-size="10.5" font-weight="400" fill="#8b93a3">$100K SIM cap · home runs</text>
+        <rect x="526" y="270" width="176" height="58" rx="9" fill="#181b22" stroke="#2a2f3a"/>
+        <text x="614" y="292" text-anchor="middle" fill="#e6e9ef">4 · Take Profit Trader</text>
+        <text x="614" y="309" text-anchor="middle" font-size="10.5" font-weight="400" fill="#8b93a3">daily payouts · veteran layer</text>
+      </g>
+      <line x1="105" y1="328" x2="105" y2="368" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arrg)"/>
+      <line x1="278" y1="328" x2="278" y2="368" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arrg)"/>
+      <line x1="442" y1="328" x2="442" y2="368" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arrg)"/>
+      <line x1="614" y1="328" x2="614" y2="368" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arrg)"/>
+      <rect x="150" y="372" width="420" height="44" rx="9" fill="#14301f" stroke="#22c55e" stroke-width="1.5"/>
+      <text x="360" y="391" text-anchor="middle" font-size="13" font-weight="700" fill="#22c55e">Payouts → fund more accounts (target 4–5 concurrent)</text>
+      <text x="360" y="407" text-anchor="middle" font-size="10.5" fill="#8b93a3">compounding accounts, not size — capped risk per trade on every one</text>
+    </svg>
+    <div class="databox"><b>THE CATCH</b><br>A copier multiplies mistakes at the same speed as
+    profits, and every firm's drawdown rules differ (EOD-trailing vs intraday, daily-loss
+    policies). Run each firm's ruleset through the <a href="ev.html" style="color:var(--accent)">EV
+    calculator</a> before its account goes live.</div>
+  </div>
+
+  <div class="stage">
+    <h2><span class="n">0</span> Start with zero (or near-zero) capital</h2>
+    <p>Free-account giveaways exist in trading communities; if buying, never pay list price —
+    discount codes are everywhere. <b>Stick to $50K evaluation accounts</b>: the drawdown-to-
+    target ratios are the friendliest in the space and the whole playbook is built around them.</p>
+  </div>
+
+  <div class="stage">
+    <h2><span class="n">1</span> First firm: Tradeify Growth</h2>
+    <p>Straightforward rules, flexible structure, and a <b>$500 minimum withdrawal</b> —
+    the fastest route to a first real payout.</p>
+    <div class="advance"><b>ADVANCE WHEN</b><br>Eval passed and first $500 payout secured.</div>
+  </div>
+
+  <div class="stage">
+    <h2><span class="n">2</span> Recycle into Lucid Trading</h2>
+    <p>The first payout funds a <b>Lucid Flex or Pro</b> account. Goal: minimum payouts
+    from <b>both firms simultaneously</b> — the start of compounding.</p>
+    <div class="advance"><b>ADVANCE WHEN</b><br>Concurrent payouts from both; profits recycled
+    into more accounts — target <b>4–5 funded accounts running at once</b>.</div>
+  </div>
+
+  <div class="stage">
+    <h2><span class="n">3</span> Add My Funded Futures Pro</h2>
+    <p>Once several accounts pay consistently, MFF Pro's <b>$100K SIM cap</b> allows the
+    "home run" holds the smaller accounts can't carry.</p>
+    <div class="advance"><b>ADVANCE WHEN</b><br>$400–500/day consistent across max-allocated
+    accounts.</div>
+  </div>
+
+  <div class="stage">
+    <h2><span class="n">4</span> Veteran layer: Take Profit Trader</h2>
+    <p>Excellent <b>daily payout structure</b> once you've built a buffer — the last piece
+    of the four-firm stack.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Risk rules (non-negotiable)</h2>
+    <ul>
+      <li><b>Risk per trade = max drawdown ÷ 10.</b> On a $50K account with a $2,000
+      drawdown, that's <b>$200 per trade</b> — ten straight losers must not kill an account.</li>
+      <li><b>NASDAQ translation:</b> 2–5 micro contracts with a 20–50 point stop.</li>
+      <li><b>One payout at a time:</b> hit the minimum, withdraw it, fund the next account.
+      Compound accounts, not position size — sizing up raises bust risk as fast as reward.</li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    Educational content only — not financial advice. Firm names, rules, and prices change
+    frequently; verify everything against each firm's own website. Futures trading involves
+    substantial risk of loss. Sequencing concept adapted from publicly available trader
+    education content.
+  </div>
+</div>
+</body>
+</html>

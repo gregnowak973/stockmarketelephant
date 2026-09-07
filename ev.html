@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prop Firm EV Calculator — Stock Market Elephant</title>
+<meta name="description" content="Monte Carlo your trading strategy through a prop-firm eval, funded account, and bankroll ladder. See the real cost of a funded account.">
+<style>
+  :root {
+    --bg: #0f1115; --panel: #181b22; --border: #2a2f3a; --text: #e6e9ef;
+    --muted: #8b93a3; --buy: #22c55e; --sell: #ef4444; --accent: #60a5fa;
+    --warn: #eab308;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.5 -apple-system, "Segoe UI", sans-serif; }
+  .wrap { max-width: 840px; margin: 0 auto; padding: 28px 16px 60px; }
+  .top { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+  .top a { color: var(--muted); text-decoration: none; font-size: 13.5px; font-weight: 600; }
+  .top a:hover { color: var(--accent); }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 13.5px; margin-bottom: 20px; max-width: 68ch; }
+  .panel { background: var(--panel); border: 1px solid var(--border);
+           border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+  .panel h2 { font-size: 13px; margin: 0 0 6px; }
+  label { display: block; font-size: 12px; color: var(--muted); margin: 10px 0 4px; }
+  input { width: 100%; padding: 7px 10px; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--bg); color: var(--text); }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .row > div { flex: 1; min-width: 105px; }
+  button.run { width: 100%; padding: 12px; border: 0; border-radius: 8px;
+    font-weight: 700; font-size: 15px; cursor: pointer; color: #08101e;
+    background: var(--accent); margin-top: 14px; }
+  .step { border-left: 3px solid var(--accent); background: var(--bg);
+          border-radius: 0 8px 8px 0; padding: 10px 14px; margin: 10px 0; }
+  .step b.t { color: var(--accent); font-size: 11px; letter-spacing: .08em; display: block;
+              margin-bottom: 4px; }
+  .step .math { font-family: ui-monospace, monospace; font-size: 13px; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+           gap: 10px; margin: 12px 0; }
+  .tile { background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+          padding: 10px 12px; }
+  .tile .k { font-size: 11px; color: var(--muted); }
+  .tile .v { font-size: 21px; font-weight: 700; margin-top: 2px; }
+  .tile .v.pos { color: var(--buy); } .tile .v.neg { color: var(--sell); }
+  .warnbox { border: 1px solid #7c5c1b; background: #201a0d; color: var(--warn);
+             border-radius: 8px; padding: 10px 14px; font-size: 13px; margin: 10px 0; }
+  .okbox { border: 1px solid #1d4a31; background: #0f2018; color: var(--buy);
+           border-radius: 8px; padding: 10px 14px; font-size: 13px; margin: 10px 0; }
+  .note { font-size: 12px; color: var(--muted); max-width: 70ch; }
+  .chart { display: flex; align-items: flex-end; gap: 4px; height: 90px; margin: 8px 0 2px; }
+  .chart div { flex: 1; background: var(--accent); border-radius: 3px 3px 0 0; min-height: 2px; }
+  .chartlbl { display: flex; gap: 4px; font-size: 10px; color: var(--muted); }
+  .chartlbl span { flex: 1; text-align: center; }
+  .footer { margin-top: 40px; border-top: 1px solid var(--border); padding-top: 16px;
+            font-size: 12px; color: var(--muted); max-width: 64ch; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="index.html">🐘 Stock Market Elephant</a><span style="color:var(--border)">/</span>
+    <span style="font-size:13.5px;color:var(--text);font-weight:600">EV Calculator</span></div>
+  <h1>Prop Firm EV Calculator</h1>
+  <div class="sub">Runs a trade-level Monte Carlo of your strategy (win rate + reward:risk)
+  through the evaluation, the funded account, and a full bankroll ladder — 3,000 account
+  simulations plus 1,500 ladder simulations, entirely in your browser. Defaults model a
+  $150K one-step eval with an EOD-trailing drawdown; every rule is editable, so match it
+  to any firm. Verify rules against the firm's own site — they change constantly.</div>
+
+  <div class="panel">
+    <h2>Your strategy</h2>
+    <div class="row">
+      <div><label>Win rate (0–1)</label><input id="win_rate" type="number" value="0.40" min="0.05" max="0.95" step="0.01"></div>
+      <div><label>Reward R (win = R × risk)</label><input id="r_mult" type="number" value="1.5" step="0.1"></div>
+      <div><label>Risk per trade ($)</label><input id="risk" type="number" value="500" step="50"></div>
+      <div><label>Trades per day</label><input id="trades_per_day" type="number" value="3" min="1" max="20"></div>
+      <div><label>Cost per trade ($)</label><input id="cost_per_trade" type="number" value="10" min="0" step="1"></div>
+    </div>
+    <h2 style="margin-top:16px">Firm rules (editable — verify against the firm!)</h2>
+    <div class="row">
+      <div><label>Eval price ($)</label><input id="eval_price" type="number" value="369"></div>
+      <div><label>Reset price ($)</label><input id="reset_price" type="number" value="95"></div>
+      <div><label>Profit target ($)</label><input id="profit_target" type="number" value="9000"></div>
+      <div><label>Trailing DD, EOD ($)</label><input id="trailing_dd" type="number" value="5000"></div>
+      <div><label>Daily loss limit ($)</label><input id="daily_loss_limit" type="number" value="3750"></div>
+    </div>
+    <div class="row">
+      <div><label>Payout buffer ($)</label><input id="payout_buffer" type="number" value="6500"></div>
+      <div><label>Min payout ($)</label><input id="min_payout" type="number" value="1500"></div>
+      <div><label>Win days / cycle</label><input id="win_days_needed" type="number" value="5"></div>
+      <div><label>Win day min ($)</label><input id="win_day_min" type="number" value="150"></div>
+      <div><label>Profit split (0–1)</label><input id="profit_split" type="number" value="0.90" step="0.05" max="1"></div>
+    </div>
+    <h2 style="margin-top:16px">Your bankroll</h2>
+    <div class="row">
+      <div><label>Starting bankroll ($)</label><input id="bankroll" type="number" value="2000"></div>
+      <div><label>Horizon (trading days)</label><input id="horizon_days" type="number" value="252"></div>
+      <div><label>Max concurrent evals</label><input id="max_concurrent_evals" type="number" value="2" min="1" max="10"></div>
+      <div><label>Max concurrent funded</label><input id="max_concurrent_funded" type="number" value="5" min="1" max="20"></div>
+    </div>
+    <button class="run" id="runBtn">Run the model</button>
+  </div>
+
+  <div id="results" style="display:none">
+    <div class="panel">
+      <h2>Step 1 — Edge per trade</h2>
+      <div class="step"><b class="t">THE IDENTITY</b>
+        <div class="math" id="evMath"></div></div>
+      <div id="evVerdict"></div>
+    </div>
+    <div class="panel">
+      <h2>Step 2 — The evaluation</h2>
+      <div class="tiles" id="evalTiles"></div>
+      <div class="step"><b class="t">COST OF ONE FUNDED ACCOUNT</b>
+        <div class="math" id="costMath"></div></div>
+    </div>
+    <div class="panel">
+      <h2>Step 3 — The funded account</h2>
+      <div class="tiles" id="fundTiles"></div>
+      <p class="note" id="fundNote"></p>
+    </div>
+    <div class="panel">
+      <h2>Step 4 — Your bankroll ladder</h2>
+      <div class="tiles" id="ladTiles"></div>
+      <div class="note">Average concurrent funded accounts by month:</div>
+      <div class="chart" id="mChart"></div>
+      <div class="chartlbl" id="mLbl"></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Educational tool only — not financial advice; no performance promised or implied.
+    The model simplifies real firm rules (EOD granularity, no consistency edge cases,
+    no time-limited subscriptions) and its outputs are only as good as your inputs.
+    Futures trading involves substantial risk of loss.
+  </div>
+</div>
+
+<script>
+// ---- seeded RNG (mulberry32) so results are reproducible per run ----
+function rng(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+const $ = id => document.getElementById(id);
+const fmt$ = v => (v < 0 ? '-$' : '$') + Math.abs(Math.round(v)).toLocaleString();
+const tile = (k, v, cls='') =>
+  `<div class="tile"><div class="k">${k}</div><div class="v ${cls}">${v ?? '—'}</div></div>`;
+const median = a => { const s = [...a].sort((x, y) => x - y); return s[Math.floor(s.length / 2)]; };
+const mean = a => a.reduce((x, y) => x + y, 0) / a.length;
+
+function dayPnl(r, s) {
+  let p = 0;
+  for (let i = 0; i < s.trades_per_day; i++)
+    p += (r() < s.win_rate ? s.r_mult * s.risk : -s.risk) - s.cost_per_trade;
+  return p;
+}
+
+function simEval(r, R, s, maxDays = 250) {
+  let bal = 0, hwm = 0;
+  for (let d = 1; d <= maxDays; d++) {
+    let pnl = Math.max(dayPnl(r, s), -R.daily_loss_limit);
+    bal += pnl;
+    if (bal <= Math.min(hwm - R.trailing_dd, 0)) return ['bust', d];
+    if (bal >= R.profit_target) return ['pass', d];
+    hwm = Math.max(hwm, bal);
+  }
+  return ['timeout', maxDays];
+}
+
+function simFunded(r, R, s, maxDays = 500) {
+  let bal = 0, hwm = 0, withdrawn = 0, nPay = 0, first = null;
+  let winDays = 0, best = 0, base = 0;
+  for (let d = 1; d <= maxDays; d++) {
+    let pnl = Math.max(dayPnl(r, s), -R.daily_loss_limit);
+    bal += pnl;
+    if (bal <= Math.min(hwm - R.trailing_dd, 0)) return [withdrawn, nPay, first, d];
+    hwm = Math.max(hwm, bal);
+    if (pnl >= R.win_day_min) winDays++;
+    best = Math.max(best, pnl);
+    const cyc = bal - base, payable = bal - R.payout_buffer;
+    if (winDays >= R.win_days_needed && payable >= R.min_payout && cyc > 0
+        && best <= 0.35 * cyc) {
+      const cap = R.payout_caps[Math.min(nPay, R.payout_caps.length - 1)];
+      const amt = Math.min(cap, payable);
+      bal -= amt; withdrawn += amt * R.profit_split; nPay++;
+      if (first === null) first = d;
+      winDays = 0; best = 0; base = bal;
+    }
+  }
+  return [withdrawn, nPay, first, maxDays];
+}
+
+function economics(R, s, nSims = 3000) {
+  const r = rng(17);
+  const evals = Array.from({length: nSims}, () => simEval(r, R, s));
+  const pPass = evals.filter(e => e[0] === 'pass').length / nSims;
+  const passD = evals.filter(e => e[0] === 'pass').map(e => e[1]);
+  const bustD = evals.filter(e => e[0] === 'bust').map(e => e[1]);
+  const funded = Array.from({length: nSims}, () => simFunded(r, R, s));
+  const w = funded.map(f => f[0]), firsts = funded.map(f => f[2]).filter(x => x !== null);
+  const att = pPass > 1e-4 ? 1 / pPass : null;
+  return {
+    pPass, att,
+    medianPassDays: passD.length ? median(passD) : null,
+    medianBustDays: bustD.length ? median(bustD) : null,
+    costPerFunded: att ? R.eval_price + (att - 1) * R.reset_price : null,
+    pFirstPayout: firsts.length / nSims,
+    medianFirst: firsts.length ? median(firsts) : null,
+    avgPayouts: mean(funded.map(f => f[1])),
+    avgWithdrawn: mean(w), medianWithdrawn: median(w),
+    medianLifespan: median(funded.map(f => f[3])),
+  };
+}
+
+function ladder(R, s, bankroll, horizon, maxEvals, maxFunded, nSims = 1500) {
+  const r = rng(23);
+  const totals = [], cashEnds = [], firsts = [];
+  let broke = 0;
+  const months = Math.floor(horizon / 21);
+  const monthly = Array.from({length: months}, () => []);
+  for (let sim = 0; sim < nSims; sim++) {
+    let cash = bankroll, evals = [], fund = [], total = 0, firstDay = null;
+    for (let d = 1; d <= horizon; d++) {
+      while (cash >= R.eval_price && evals.length < maxEvals && fund.length < maxFunded) {
+        cash -= R.eval_price; evals.push({bal: 0, hwm: 0});
+      }
+      for (const e of [...evals]) {
+        const pnl = Math.max(dayPnl(r, s), -R.daily_loss_limit);
+        e.bal += pnl;
+        if (e.bal <= Math.min(e.hwm - R.trailing_dd, 0)) {
+          evals.splice(evals.indexOf(e), 1);
+          if (cash >= R.reset_price) { cash -= R.reset_price; evals.push({bal: 0, hwm: 0}); }
+        } else if (e.bal >= R.profit_target) {
+          evals.splice(evals.indexOf(e), 1);
+          if (fund.length < maxFunded) {
+            fund.push({bal: 0, hwm: 0, wd: 0, best: 0, base: 0, np: 0});
+            total++; if (firstDay === null) firstDay = d;
+          }
+        } else e.hwm = Math.max(e.hwm, e.bal);
+      }
+      for (const f of [...fund]) {
+        const pnl = Math.max(dayPnl(r, s), -R.daily_loss_limit);
+        f.bal += pnl;
+        if (f.bal <= Math.min(f.hwm - R.trailing_dd, 0)) { fund.splice(fund.indexOf(f), 1); continue; }
+        f.hwm = Math.max(f.hwm, f.bal);
+        if (pnl >= R.win_day_min) f.wd++;
+        f.best = Math.max(f.best, pnl);
+        const cyc = f.bal - f.base, payable = f.bal - R.payout_buffer;
+        if (f.wd >= R.win_days_needed && payable >= R.min_payout && cyc > 0
+            && f.best <= 0.35 * cyc) {
+          const cap = R.payout_caps[Math.min(f.np, R.payout_caps.length - 1)];
+          const amt = Math.min(cap, payable);
+          f.bal -= amt; cash += amt * R.profit_split; f.np++;
+          f.wd = 0; f.best = 0; f.base = f.bal;
+        }
+      }
+      if (d % 21 === 0 && d / 21 <= months) monthly[d / 21 - 1].push(fund.length);
+    }
+    totals.push(total); cashEnds.push(cash); firsts.push(firstDay);
+    if (cash < R.reset_price && !evals.length && !fund.length) broke++;
+  }
+  const fd = firsts.filter(x => x !== null);
+  return {
+    expTotal: mean(totals), medTotal: median(totals),
+    pOne: fd.length / nSims, medFirst: fd.length ? median(fd) : null,
+    medCash: median(cashEnds), pBroke: broke / nSims,
+    monthly: monthly.map(m => m.length ? mean(m) : 0),
+  };
+}
+
+const IDS = ['win_rate','r_mult','risk','trades_per_day','cost_per_trade','eval_price',
+  'reset_price','profit_target','trailing_dd','daily_loss_limit','payout_buffer',
+  'min_payout','win_days_needed','win_day_min','profit_split','bankroll','horizon_days',
+  'max_concurrent_evals','max_concurrent_funded'];
+
+function run() {
+  const v = Object.fromEntries(IDS.map(i => [i, +$(i).value]));
+  const s = {win_rate: v.win_rate, r_mult: v.r_mult, risk: v.risk,
+             trades_per_day: v.trades_per_day, cost_per_trade: v.cost_per_trade};
+  const R = {...v, payout_caps: [2500, 3000, 4000, 5000]};
+  const e = economics(R, s);
+  const l = ladder(R, s, v.bankroll, v.horizon_days, v.max_concurrent_evals, v.max_concurrent_funded);
+  $('results').style.display = '';
+
+  const grossR = s.win_rate * s.r_mult - (1 - s.win_rate);
+  const ev = grossR * s.risk - s.cost_per_trade;
+  $('evMath').innerHTML =
+    `EV = p·R − (1−p) = ${s.win_rate}×${s.r_mult} − ${(1-s.win_rate).toFixed(2)} = <b>${grossR.toFixed(3)} R</b> gross per trade<br>` +
+    `in dollars: ${grossR.toFixed(3)} × ${fmt$(s.risk)} − ${fmt$(s.cost_per_trade)} costs = <b>${fmt$(ev)}</b> per trade → ${fmt$(ev * s.trades_per_day)}/day`;
+  $('evVerdict').innerHTML = Math.abs(grossR) < 0.02
+    ? `<div class="warnbox"><b>THIS STRATEGY IS BREAKEVEN.</b> Every dollar below comes from
+       variance interacting with the firm's rule asymmetry, and costs make the true expectation
+       negative. The ladder is a lottery-ticket structure, not an income stream. Nudge the win
+       rate up a few points and re-run to see how sharply everything changes.</div>`
+    : ev > 0
+    ? `<div class="okbox">Positive expectancy: ${fmt$(ev)}/trade after costs.</div>`
+    : `<div class="warnbox">Negative expectancy (${fmt$(ev)}/trade after costs) — the model
+       below will show the slow bleed honestly.</div>`;
+
+  $('evalTiles').innerHTML =
+    tile('P(pass eval)', (e.pPass * 100).toFixed(1) + '%', e.pPass >= 0.5 ? 'pos' : '') +
+    tile('Expected attempts', e.att ? e.att.toFixed(1) : '—') +
+    tile('Median days to pass', e.medianPassDays) +
+    tile('Median days to bust', e.medianBustDays);
+  $('costMath').innerHTML = e.att
+    ? `cost = ticket + (attempts − 1) × reset = ${fmt$(v.eval_price)} + ${(e.att-1).toFixed(1)} × ${fmt$(v.reset_price)} = <b>${fmt$(e.costPerFunded)}</b> per funded account`
+    : 'pass probability ≈ 0 — no finite cost';
+
+  $('fundTiles').innerHTML =
+    tile('P(ever get a payout)', (e.pFirstPayout * 100).toFixed(1) + '%', e.pFirstPayout >= 0.5 ? 'pos' : 'neg') +
+    tile('Median days to 1st payout', e.medianFirst) +
+    tile('Avg withdrawn / account', fmt$(e.avgWithdrawn)) +
+    tile('Median withdrawn', fmt$(e.medianWithdrawn)) +
+    tile('Median lifespan (days)', e.medianLifespan);
+  $('fundNote').textContent = `Average payouts per funded account: ${e.avgPayouts.toFixed(2)}. ` +
+    (e.medianWithdrawn === 0
+      ? 'Median withdrawn is $0 — MOST funded accounts die before their first payout; the average is carried by a lucky minority.'
+      : 'The median account does reach a payout.');
+
+  $('ladTiles').innerHTML =
+    tile('Expected funded accts', l.expTotal.toFixed(2)) +
+    tile('Median funded accts', l.medTotal) +
+    tile('P(≥1 funded)', (l.pOne * 100).toFixed(0) + '%', l.pOne >= 0.8 ? 'pos' : '') +
+    tile('Median days to 1st funded', l.medFirst) +
+    tile('P(bankroll broke)', (l.pBroke * 100).toFixed(0) + '%', l.pBroke > 0.4 ? 'neg' : '') +
+    tile('Median cash at end', fmt$(l.medCash), l.medCash < v.bankroll ? 'neg' : 'pos');
+  const mx = Math.max(...l.monthly, 0.01);
+  $('mChart').innerHTML = l.monthly.map(x =>
+    `<div style="height:${(x / mx * 100).toFixed(0)}%" title="${x.toFixed(2)}"></div>`).join('');
+  $('mLbl').innerHTML = l.monthly.map((_, i) => `<span>M${i+1}</span>`).join('');
+}
+$('runBtn').onclick = run;
+run();
+</script>
+</body>
+</html>
