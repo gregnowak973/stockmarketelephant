@@ -1,0 +1,37 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why most backtests lie (and the three tests that catch them) — Stock Market Elephant</title><meta name="description" content="PBO, deflated Sharpe, and combinatorial cross-validation explained for prop traders.">
+<style>
+:root{--bg:#0f1115;--panel:#181b22;--border:#2a2f3a;--text:#e6e9ef;--muted:#8b93a3;--accent:#60a5fa;--green:#22c55e;--red:#ef4444}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 -apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:680px;margin:0 auto;padding:32px 20px 70px}
+.top{display:flex;gap:10px;margin-bottom:26px;font-size:13.5px}.top a{color:var(--muted);text-decoration:none;font-weight:600}.top a:hover{color:var(--accent)}
+.kicker{font:600 11px ui-monospace,monospace;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:6px}
+h1{font-size:28px;line-height:1.2;margin:0 0 6px}
+.date{color:var(--muted);font-size:13px;margin-bottom:24px}
+p{margin:0 0 15px;max-width:62ch} h2{font-size:19px;margin:28px 0 8px}
+table{border-collapse:collapse;font:13px ui-monospace,monospace;margin:12px 0;width:100%}
+th,td{text-align:right;padding:6px 10px;border-bottom:1px solid var(--border)}th{color:var(--muted);font-weight:500}
+th:first-child,td:first-child{text-align:left}
+.g{color:var(--green)}.r{color:var(--red)}
+.pull{border-left:3px solid var(--accent);background:var(--panel);border-radius:0 8px 8px 0;padding:12px 16px;margin:16px 0;font-size:15px}
+.next{margin-top:34px;border-top:1px solid var(--border);padding-top:16px;font-size:14px}.next a{color:var(--accent);text-decoration:none}
+.foot{margin-top:30px;font-size:12px;color:var(--muted);max-width:62ch}
+code{font:.85em ui-monospace,monospace;background:var(--panel);padding:1px 6px;border-radius:4px}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">🐘 Stock Market Elephant</a><span style="color:var(--border)">/</span><a href="blog.html">The Graveyard Series</a></div>
+<div class="kicker">The graveyard series · part 1 of 6</div>
+<h1>Why most backtests lie (and the three tests that catch them)</h1><div class="date">Sep 9, 2026 · 6 min read</div>
+
+<p>We spent a week building a trading bot for prop-firm futures. Before writing a single strategy, we built the thing most traders never build: a lie detector for our own backtests.</p>
+<p>Here's the problem. Test 100 random strategies on any price history and several will look brilliant — not because they work, but because with enough tries, luck produces beautiful equity curves. Every "look at my backtest" screenshot you've seen on social media is, statistically, more likely to be this than not.</p>
+<h2>The three gates</h2>
+<p><b>1. Walk-forward.</b> Pick parameters using only past data, trade the next quarter blind, repeat. If your strategy only works when it's allowed to see the answers, this kills it.</p>
+<p><b>2. Purged cross-validation.</b> Slice history into folds, tune on some, score on others — with a gap ("embargo") around every boundary so indicators can't leak information across. Reveals whether the edge lives everywhere or in one lucky year.</p>
+<p><b>3. CPCV + the Probability of Backtest Overfitting.</b> The heavy machinery, from López de Prado's <i>Advances in Financial Machine Learning</i>. Run every combination of train/test blocks, and count: how often does the optimizer's in-sample favorite <i>underperform the median strategy</i> out-of-sample? That count is PBO. A real edge scores under 20%. Random noise scores ~50%. We fed it pure random-walk data as a control: PBO 47%, deflated Sharpe 0 — the machine correctly calls noise on noise.</p>
+<div class="pull">Our opening-range strategy scored PBO 0% — in fifteen out of fifteen train/test splits, the honestly-chosen config held up out-of-sample. That number, not the equity curve, is why we kept building.</div>
+<p>There's a fourth number, the deflated Sharpe ratio, which asks: given how many things you tried, what Sharpe would pure luck have produced — and are you above it? It counts your <i>attempts</i>, which means it punishes you for the ideas you tried and threw away. Almost nobody computes it, because almost nobody wants the answer.</p>
+<p>Over the next five posts we'll show you everything we tried against these gates — including eight ideas that looked great and failed, several of which you are probably trading right now.</p>
+<div class="next">Next: <a href="the-one-filter.html">Part 2 — Ten ideas entered, one survived</a></div>
+<div class="foot">Educational content only — not financial advice; no performance promised or implied. All results are backtests on real CME MNQ data (2019–2026, ~1,900 sessions, realistic costs) and backtests differ from live trading. Futures involve substantial risk of loss.</div>
+</div></body></html>

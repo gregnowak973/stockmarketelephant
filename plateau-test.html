@@ -1,0 +1,38 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The plateau test — and the only clean data left on Earth — Stock Market Elephant</title><meta name="description" content="Parameter stability heatmaps, regime-switching, and why your own research contaminates your backtest.">
+<style>
+:root{--bg:#0f1115;--panel:#181b22;--border:#2a2f3a;--text:#e6e9ef;--muted:#8b93a3;--accent:#60a5fa;--green:#22c55e;--red:#ef4444}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 -apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:680px;margin:0 auto;padding:32px 20px 70px}
+.top{display:flex;gap:10px;margin-bottom:26px;font-size:13.5px}.top a{color:var(--muted);text-decoration:none;font-weight:600}.top a:hover{color:var(--accent)}
+.kicker{font:600 11px ui-monospace,monospace;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:6px}
+h1{font-size:28px;line-height:1.2;margin:0 0 6px}
+.date{color:var(--muted);font-size:13px;margin-bottom:24px}
+p{margin:0 0 15px;max-width:62ch} h2{font-size:19px;margin:28px 0 8px}
+table{border-collapse:collapse;font:13px ui-monospace,monospace;margin:12px 0;width:100%}
+th,td{text-align:right;padding:6px 10px;border-bottom:1px solid var(--border)}th{color:var(--muted);font-weight:500}
+th:first-child,td:first-child{text-align:left}
+.g{color:var(--green)}.r{color:var(--red)}
+.pull{border-left:3px solid var(--accent);background:var(--panel);border-radius:0 8px 8px 0;padding:12px 16px;margin:16px 0;font-size:15px}
+.next{margin-top:34px;border-top:1px solid var(--border);padding-top:16px;font-size:14px}.next a{color:var(--accent);text-decoration:none}
+.foot{margin-top:30px;font-size:12px;color:var(--muted);max-width:62ch}
+code{font:.85em ui-monospace,monospace;background:var(--panel);padding:1px 6px;border-radius:4px}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">🐘 Stock Market Elephant</a><span style="color:var(--border)">/</span><a href="blog.html">The Graveyard Series</a></div>
+<div class="kicker">The graveyard series · part 6 of 6</div>
+<h1>The plateau test — and the only clean data left on Earth</h1><div class="date">Oct 14, 2026 · 7 min read</div>
+
+<p>Final part. Two ideas that changed how we think about every backtest we'll ever run.</p>
+<h2>1. Robust strategies live on plateaus</h2>
+<p>Take your strategy's two main parameters, sweep a grid around your chosen settings, and heatmap the results. A robust strategy shows a <b>broad bright plateau</b> — many nearby settings work. An overfit one shows a lone bright <b>spike</b>: one magic cell surrounded by failure, meaning you didn't find an edge, you found a coincidence.</p>
+<p>Ours plateaus wide: opening ranges from 20 to 60 minutes all work, filter settings from 0.10 to 0.25 all work, and the cliff (sub-10-minute ranges) has an economic explanation — the market hasn't picked a direction yet. Meanwhile the seductive variants we'd rejected showed exactly the spike pattern: brilliant in one column, collapsing one parameter-step away. The heatmap made a week of statistics visible in one picture.</p>
+<h2>2. The contamination problem nobody talks about</h2>
+<p>Late in the project we found something exciting: re-optimizing the strategy quarterly — letting it switch configurations as regimes change — scored dramatically better out-of-sample. Every quarterly pick used only past data. Textbook clean, right?</p>
+<p>No. The <i>scheme</i> never saw the future — but <i>we</i> had. We chose which options to put in its menu after watching seven years of history, including the years it was then "tested" on. We put direction-switching on the menu <i>because we'd seen it work in 2022</i>. The scheme took honest exams that we wrote after reading the answer key.</p>
+<div class="pull">Your backtest can be perfectly clean while your research process is contaminated. Every idea you tried and discarded, every chart you eyeballed before "deciding" the rules — it all leaks future knowledge into what you chose to test.</div>
+<p>The tell: rerun the adaptive scheme restricted to the menu we'd fixed <i>before</i> that research burst — the advantage nearly vanishes. All the excess came from hindsight-chosen options.</p>
+<p>Which leads to the ending every honest quant project reaches: after enough research, your historical data is spent. You've seen it; it can't surprise you anymore. The only uncontaminated data left is the future. So that's where we're going — a pre-registered live paper campaign, decision rules written down before the first trade, no mid-stream edits. The backtest lab did its job: it killed eight bad ideas and certified two good ones. The market gets the final vote. It always did.</p>
+<div class="next">Start of series: <a href="why-most-backtests-lie.html">Part 1 — Why most backtests lie</a> · Try the math yourself: <a href="ev.html">Prop Firm EV Calculator</a></div>
+<div class="foot">Educational content only — not financial advice; no performance promised or implied. All results are backtests on real CME MNQ data (2019–2026, ~1,900 sessions, realistic costs) and backtests differ from live trading. Futures involve substantial risk of loss.</div>
+</div></body></html>

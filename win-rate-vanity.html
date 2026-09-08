@@ -1,0 +1,41 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Win rate is a vanity metric — Stock Market Elephant</title><meta name="description" content="We swept every profit target. Higher win rates made less money. Here's the math.">
+<style>
+:root{--bg:#0f1115;--panel:#181b22;--border:#2a2f3a;--text:#e6e9ef;--muted:#8b93a3;--accent:#60a5fa;--green:#22c55e;--red:#ef4444}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 -apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:680px;margin:0 auto;padding:32px 20px 70px}
+.top{display:flex;gap:10px;margin-bottom:26px;font-size:13.5px}.top a{color:var(--muted);text-decoration:none;font-weight:600}.top a:hover{color:var(--accent)}
+.kicker{font:600 11px ui-monospace,monospace;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:6px}
+h1{font-size:28px;line-height:1.2;margin:0 0 6px}
+.date{color:var(--muted);font-size:13px;margin-bottom:24px}
+p{margin:0 0 15px;max-width:62ch} h2{font-size:19px;margin:28px 0 8px}
+table{border-collapse:collapse;font:13px ui-monospace,monospace;margin:12px 0;width:100%}
+th,td{text-align:right;padding:6px 10px;border-bottom:1px solid var(--border)}th{color:var(--muted);font-weight:500}
+th:first-child,td:first-child{text-align:left}
+.g{color:var(--green)}.r{color:var(--red)}
+.pull{border-left:3px solid var(--accent);background:var(--panel);border-radius:0 8px 8px 0;padding:12px 16px;margin:16px 0;font-size:15px}
+.next{margin-top:34px;border-top:1px solid var(--border);padding-top:16px;font-size:14px}.next a{color:var(--accent);text-decoration:none}
+.foot{margin-top:30px;font-size:12px;color:var(--muted);max-width:62ch}
+code{font:.85em ui-monospace,monospace;background:var(--panel);padding:1px 6px;border-radius:4px}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">🐘 Stock Market Elephant</a><span style="color:var(--border)">/</span><a href="blog.html">The Graveyard Series</a></div>
+<div class="kicker">The graveyard series · part 4 of 6</div>
+<h1>Win rate is a vanity metric</h1><div class="date">Sep 30, 2026 · 5 min read</div>
+
+<p>Everyone wants a higher win rate. So we bought one, at every price the market offered, and recorded what it cost. Same strategy, same stops — only the profit target changes:</p>
+<table>
+<tr><th>Take profit at</th><th>Win rate</th><th>Total profit</th></tr>
+<tr><td>0.5× risk</td><td>66%</td><td class="r">$4,543</td></tr>
+<tr><td>1× risk</td><td>55%</td><td>$14,096</td></tr>
+<tr><td>1.5× risk</td><td>52%</td><td>$14,557</td></tr>
+<tr><td>2× risk</td><td>51%</td><td>$12,910</td></tr>
+<tr><td>3× risk / ride to close</td><td>51%</td><td class="g">$14,803</td></tr>
+</table>
+<p>The 66%-win version makes <b>less than a third</b> of the money. Every extra point of win rate is purchased by selling a winner early: you keep all the same losers and convert the +2R and +3R days into +0.5R days. The equity curve gets smoother wins and the same rough losses.</p>
+<div class="pull">Win rate tells you how often you're right. It says nothing about whether being right pays. A 35%-win trend system and a 90%-win option-selling system can both be excellent — and both can be ruinous.</div>
+<p>The honest structure of our table: everything from 1× to 3× is statistically indistinguishable (we ran the formal test; the differences are sampling noise), and below 1× is a cliff. So the target barely matters — which itself is informative: this strategy's engine is <i>holding to the close</i>, and the target is decoration.</p>
+<p>One real use for the win-rate dial: psychology. If you genuinely cannot sit through a 51%-win system's losing streaks — and at 4 trades/week, losing 5 of 7 happens regularly by pure chance — running 1× costs approximately nothing and wins 55%. Just know you're buying comfort, not edge, and decide <i>before</i> you start, not mid-drawdown.</p>
+<div class="next">Next: <a href="sizing-truth.html">Part 5 — What position sizing can and cannot do</a></div>
+<div class="foot">Educational content only — not financial advice; no performance promised or implied. All results are backtests on real CME MNQ data (2019–2026, ~1,900 sessions, realistic costs) and backtests differ from live trading. Futures involve substantial risk of loss.</div>
+</div></body></html>

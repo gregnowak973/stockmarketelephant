@@ -1,0 +1,45 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The graveyard: eight popular ideas our data killed — Stock Market Elephant</title><meta name="description" content="Retest entries, volume confirmation, trend filters, tight stops — tested on 1,900 real sessions.">
+<style>
+:root{--bg:#0f1115;--panel:#181b22;--border:#2a2f3a;--text:#e6e9ef;--muted:#8b93a3;--accent:#60a5fa;--green:#22c55e;--red:#ef4444}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 -apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:680px;margin:0 auto;padding:32px 20px 70px}
+.top{display:flex;gap:10px;margin-bottom:26px;font-size:13.5px}.top a{color:var(--muted);text-decoration:none;font-weight:600}.top a:hover{color:var(--accent)}
+.kicker{font:600 11px ui-monospace,monospace;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:6px}
+h1{font-size:28px;line-height:1.2;margin:0 0 6px}
+.date{color:var(--muted);font-size:13px;margin-bottom:24px}
+p{margin:0 0 15px;max-width:62ch} h2{font-size:19px;margin:28px 0 8px}
+table{border-collapse:collapse;font:13px ui-monospace,monospace;margin:12px 0;width:100%}
+th,td{text-align:right;padding:6px 10px;border-bottom:1px solid var(--border)}th{color:var(--muted);font-weight:500}
+th:first-child,td:first-child{text-align:left}
+.g{color:var(--green)}.r{color:var(--red)}
+.pull{border-left:3px solid var(--accent);background:var(--panel);border-radius:0 8px 8px 0;padding:12px 16px;margin:16px 0;font-size:15px}
+.next{margin-top:34px;border-top:1px solid var(--border);padding-top:16px;font-size:14px}.next a{color:var(--accent);text-decoration:none}
+.foot{margin-top:30px;font-size:12px;color:var(--muted);max-width:62ch}
+code{font:.85em ui-monospace,monospace;background:var(--panel);padding:1px 6px;border-radius:4px}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">🐘 Stock Market Elephant</a><span style="color:var(--border)">/</span><a href="blog.html">The Graveyard Series</a></div>
+<div class="kicker">The graveyard series · part 3 of 6</div>
+<h1>The graveyard: eight popular ideas our data killed</h1><div class="date">Sep 23, 2026 · 8 min read</div>
+
+<p>Everything below is taught, sold, and repeated across trading social media. We implemented each one mechanically and ran it through the gates on ~1,900 real MNQ sessions. All eight failed. Bring flowers.</p>
+<table>
+<tr><th>Idea</th><th>What happened</th></tr>
+<tr><td>"Wait for the pullback" (retest entries)</td><td class="r">−35% profit. The best breakouts never pull back.</td></tr>
+<tr><td>Volume confirmation on the breakout candle</td><td class="r">Higher win rate, same money — a wash at best</td></tr>
+<tr><td>Daily volume filter</td><td class="r">Collinear with volatility — zero new information</td></tr>
+<tr><td>Trend filter (only trade above the 20/50-day MA)</td><td class="r">Deleted winners, kept losers; win rate unchanged</td></tr>
+<tr><td>Fixed tight stops (5–15 pts)</td><td class="r">Catastrophic: win rate 2–12%</td></tr>
+<tr><td>Stop under the breakout candle ("structural stop")</td><td class="r">Sharpe −2.2. Worse than random.</td></tr>
+<tr><td>Move to breakeven quickly / trail tight</td><td class="r">Noise tags breakeven, ejects future winners</td></tr>
+<tr><td>VWAP-tag entries with tight stops</td><td class="r">Fires constantly, dies constantly</td></tr>
+</table>
+<h2>The pattern in the failures</h2>
+<p><b>Half of them die by the same sword: stop scale.</b> A 5-minute bar of NASDAQ noise is 20–40 points. Any stop inside that band — under the candle, a fixed 30 points, a fast breakeven — gets executed by randomness, not by being wrong. If your edge is built on a ~100-point structure, your stop must live at that scale. "Tight stop = small risk" is the most expensive sentence in retail trading; what it actually equals is <i>high probability of a random loss</i>.</p>
+<p><b>The other half die by cutting the right tail.</b> Pullback entries, early profit-taking, trailing stops — each converts a few big winners into many small outcomes. Feels safer. Costs everything, because in a ~50%-win strategy the entire profit lives in the tail you just amputated.</p>
+<div class="pull">Not one of the eight survived contact with an honest train/test split. Several looked brilliant in-sample first — which is exactly the trap.</div>
+<p>A note on the trader we borrowed three of these ideas from: his discretionary results may well be real. But whatever makes them real lives in the parts that don't systematize — level selection, timing feel, news awareness. The mechanical rules he states, applied mechanically, lose. Worth knowing before you copy anyone's playbook verbatim.</p>
+<div class="next">Next: <a href="win-rate-vanity.html">Part 4 — Win rate is a vanity metric</a></div>
+<div class="foot">Educational content only — not financial advice; no performance promised or implied. All results are backtests on real CME MNQ data (2019–2026, ~1,900 sessions, realistic costs) and backtests differ from live trading. Futures involve substantial risk of loss.</div>
+</div></body></html>

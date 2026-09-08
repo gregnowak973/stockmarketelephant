@@ -1,0 +1,41 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What position sizing can and cannot do — Stock Market Elephant</title><meta name="description" content="Sizing can't help you pass an eval. It can transform a funded account. Monte Carlo proof.">
+<style>
+:root{--bg:#0f1115;--panel:#181b22;--border:#2a2f3a;--text:#e6e9ef;--muted:#8b93a3;--accent:#60a5fa;--green:#22c55e;--red:#ef4444}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 -apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:680px;margin:0 auto;padding:32px 20px 70px}
+.top{display:flex;gap:10px;margin-bottom:26px;font-size:13.5px}.top a{color:var(--muted);text-decoration:none;font-weight:600}.top a:hover{color:var(--accent)}
+.kicker{font:600 11px ui-monospace,monospace;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:6px}
+h1{font-size:28px;line-height:1.2;margin:0 0 6px}
+.date{color:var(--muted);font-size:13px;margin-bottom:24px}
+p{margin:0 0 15px;max-width:62ch} h2{font-size:19px;margin:28px 0 8px}
+table{border-collapse:collapse;font:13px ui-monospace,monospace;margin:12px 0;width:100%}
+th,td{text-align:right;padding:6px 10px;border-bottom:1px solid var(--border)}th{color:var(--muted);font-weight:500}
+th:first-child,td:first-child{text-align:left}
+.g{color:var(--green)}.r{color:var(--red)}
+.pull{border-left:3px solid var(--accent);background:var(--panel);border-radius:0 8px 8px 0;padding:12px 16px;margin:16px 0;font-size:15px}
+.next{margin-top:34px;border-top:1px solid var(--border);padding-top:16px;font-size:14px}.next a{color:var(--accent);text-decoration:none}
+.foot{margin-top:30px;font-size:12px;color:var(--muted);max-width:62ch}
+code{font:.85em ui-monospace,monospace;background:var(--panel);padding:1px 6px;border-radius:4px}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">🐘 Stock Market Elephant</a><span style="color:var(--border)">/</span><a href="blog.html">The Graveyard Series</a></div>
+<div class="kicker">The graveyard series · part 5 of 6</div>
+<h1>What position sizing can and cannot do</h1><div class="date">Oct 7, 2026 · 6 min read</div>
+
+<p>We Monte-Carlo'd a 50K prop eval (profit target vs trailing drawdown) thousands of times at every contract size, feeding it our strategy's real daily P&L. The result surprised us into a two-phase doctrine.</p>
+<h2>Phase 1: during the eval, sizing is a treadmill</h2>
+<table>
+<tr><th>Size</th><th>Pass rate</th><th>Median days to pass</th></tr>
+<tr><td>1 micro</td><td>43.9%</td><td>123</td></tr>
+<tr><td>2 micros</td><td>42.1%</td><td>44</td></tr>
+<tr><td>5 micros</td><td>46.5%</td><td>11</td></tr>
+</table>
+<p>Pass probability is <b>flat at every size</b>. An eval is a race between a profit target and a trailing drawdown — multiply your bets and both scale together, so the odds never move. Sizing buys <i>speed</i>, not <i>probability</i>. (Speed has value — evals bill monthly — but know what you're buying.) We also tested clever dynamic sizing against the eval. Same wall: the geometry is scale-invariant. Only a genuinely better strategy improves eval odds. Nothing else does. Anyone selling you an "eval passing" sizing trick is selling you the treadmill.</p>
+<h2>Phase 2: once funded, sizing becomes real</h2>
+<p>A funded account with a buffer has no target racing you. There, volatility-scaled sizing — risking a constant number of <i>dollars</i> instead of a constant number of <i>contracts</i>, so quiet days get more size and wild days get less — raised our risk-adjusted return by ~25% and nearly doubled the return-to-drawdown ratio. Same trades. Same signals. Only the <i>when-big-when-small</i> changed. And it passed the full overfitting gauntlet (PBO 0%).</p>
+<div class="pull">Sizing is a wealth tool, not an eval tool. Flat and small while a trailing drawdown hunts you; volatility-scaled once you have cushion; and always decided by a written rule, never by how yesterday felt.</div>
+<p>Our rule is literally written down with a formula and a "recomputed Fridays only" clause — because the one guaranteed way to ruin good sizing is resizing after a loss.</p>
+<div class="next">Next: <a href="plateau-test.html">Part 6 — The plateau test, and the only clean data left</a></div>
+<div class="foot">Educational content only — not financial advice; no performance promised or implied. All results are backtests on real CME MNQ data (2019–2026, ~1,900 sessions, realistic costs) and backtests differ from live trading. Futures involve substantial risk of loss.</div>
+</div></body></html>
