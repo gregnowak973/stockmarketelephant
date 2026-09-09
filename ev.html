@@ -6,11 +6,16 @@
 <title>Prop Firm EV Calculator — Stock Market Elephant</title>
 <meta name="description" content="Monte Carlo your trading strategy through a prop-firm eval, funded account, and bankroll ladder. See the real cost of a funded account.">
 <style>
-  :root {
+  :root{
+    --bg: #f7f6f3; --panel: #ffffff; --border: #e3e2dc; --text: #1d2129;
+    --muted: #5f6672; --buy: #177a4c; --sell: #bb3535; --accent: #2f5fc4;
+    --warn: #8a6116;
+   --on-accent:#ffffff; --warn-bg:var(--warn-bg); --warn-border:var(--warn-border); --ok-bg:var(--ok-bg); --ok-border:var(--ok-border);}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
     --bg: #0f1115; --panel: #181b22; --border: #2a2f3a; --text: #e6e9ef;
     --muted: #8b93a3; --buy: #22c55e; --sell: #ef4444; --accent: #60a5fa;
     --warn: #eab308;
-  }
+   --on-accent:var(--on-accent); --warn-bg:var(--warn-bg); --warn-border:var(--warn-border); --ok-bg:var(--ok-bg); --ok-border:var(--ok-border);}}
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text);
          font: 15px/1.5 -apple-system, "Segoe UI", sans-serif; }
@@ -29,7 +34,7 @@
   .row { display: flex; gap: 10px; flex-wrap: wrap; }
   .row > div { flex: 1; min-width: 105px; }
   button.run { width: 100%; padding: 12px; border: 0; border-radius: 8px;
-    font-weight: 700; font-size: 15px; cursor: pointer; color: #08101e;
+    font-weight: 700; font-size: 15px; cursor: pointer; color: var(--on-accent);
     background: var(--accent); margin-top: 14px; }
   .step { border-left: 3px solid var(--accent); background: var(--bg);
           border-radius: 0 8px 8px 0; padding: 10px 14px; margin: 10px 0; }
@@ -43,9 +48,9 @@
   .tile .k { font-size: 11px; color: var(--muted); }
   .tile .v { font-size: 21px; font-weight: 700; margin-top: 2px; }
   .tile .v.pos { color: var(--buy); } .tile .v.neg { color: var(--sell); }
-  .warnbox { border: 1px solid #7c5c1b; background: #201a0d; color: var(--warn);
+  .warnbox { border: 1px solid var(--warn-border); background: var(--warn-bg); color: var(--warn);
              border-radius: 8px; padding: 10px 14px; font-size: 13px; margin: 10px 0; }
-  .okbox { border: 1px solid #1d4a31; background: #0f2018; color: var(--buy);
+  .okbox { border: 1px solid var(--ok-border); background: var(--ok-bg); color: var(--buy);
            border-radius: 8px; padding: 10px 14px; font-size: 13px; margin: 10px 0; }
   .note { font-size: 12px; color: var(--muted); max-width: 70ch; }
   .chart { display: flex; align-items: flex-end; gap: 4px; height: 90px; margin: 8px 0 2px; }

@@ -6,10 +6,14 @@
 <title>Stock Market Elephant</title>
 <meta name="description" content="Honest math for prop-firm futures trading: expected-value calculators, scaling playbooks, and the numbers nobody shows you.">
 <style>
-  :root {
+  :root{
+    --bg: #f7f6f3; --panel: #ffffff; --border: #e3e2dc; --text: #1d2129;
+    --muted: #5f6672; --green: #177a4c; --red: #bb3535; --accent: #2f5fc4;
+   --on-accent:#ffffff; --warn-bg:var(--warn-bg); --warn-border:var(--warn-border); --ok-bg:var(--ok-bg); --ok-border:var(--ok-border);}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
     --bg: #0f1115; --panel: #181b22; --border: #2a2f3a; --text: #e6e9ef;
     --muted: #8b93a3; --green: #22c55e; --red: #ef4444; --accent: #60a5fa;
-  }
+   --on-accent:var(--on-accent); --warn-bg:var(--warn-bg); --warn-border:var(--warn-border); --ok-bg:var(--ok-bg); --ok-border:var(--ok-border);}}
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text);
          font: 16px/1.6 -apple-system, "Segoe UI", sans-serif; }

@@ -6,11 +6,16 @@
 <title>The Scaling Playbook — Stock Market Elephant</title>
 <meta name="description" content="The multi-firm prop scaling strategy: start on $50K evals, recycle payouts into new accounts, copy one signal everywhere.">
 <style>
-  :root {
+  :root{
+    --bg: #f7f6f3; --panel: #ffffff; --border: #e3e2dc; --text: #1d2129;
+    --muted: #5f6672; --buy: #177a4c; --sell: #bb3535; --accent: #2f5fc4;
+    --warn: #8a6116;
+   --on-accent:#ffffff; --warn-bg:var(--warn-bg); --warn-border:var(--warn-border); --ok-bg:var(--ok-bg); --ok-border:var(--ok-border);}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
     --bg: #0f1115; --panel: #181b22; --border: #2a2f3a; --text: #e6e9ef;
     --muted: #8b93a3; --buy: #22c55e; --sell: #ef4444; --accent: #60a5fa;
     --warn: #eab308;
-  }
+   --on-accent:var(--on-accent); --warn-bg:var(--warn-bg); --warn-border:var(--warn-border); --ok-bg:var(--ok-bg); --ok-border:var(--ok-border);}}
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text);
          font: 15px/1.55 -apple-system, "Segoe UI", sans-serif; }
@@ -25,7 +30,7 @@
            padding: 16px 18px; margin-bottom: 12px; }
   .stage h2 { font-size: 14.5px; margin: 0 0 6px; display: flex; align-items: center; gap: 10px; }
   .n { display: inline-flex; align-items: center; justify-content: center; width: 24px;
-       height: 24px; border-radius: 50%; background: var(--accent); color: #08101e;
+       height: 24px; border-radius: 50%; background: var(--accent); color: var(--on-accent);
        font-size: 13px; font-weight: 700; flex-shrink: 0; }
   .stage p { margin: 0 0 8px; font-size: 13.5px; color: var(--muted); max-width: 70ch; }
   .stage p b { color: var(--text); }
@@ -62,48 +67,48 @@
     <svg viewBox="0 0 720 430" width="100%" style="display:block" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M0,0L10,5L0,10z" fill="#8b93a3"/>
+          <path d="M0,0L10,5L0,10z" fill="var(--muted)"/>
         </marker>
         <marker id="arrg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M0,0L10,5L0,10z" fill="#22c55e"/>
+          <path d="M0,0L10,5L0,10z" fill="var(--buy, var(--green, #177a4c))"/>
         </marker>
       </defs>
-      <rect x="255" y="12" width="210" height="46" rx="9" fill="#181b22" stroke="#60a5fa" stroke-width="1.5"/>
-      <text x="360" y="31" text-anchor="middle" font-size="13" font-weight="700" fill="#e6e9ef">Your tested edge</text>
-      <text x="360" y="48" text-anchor="middle" font-size="11" fill="#8b93a3">backtested · paper-proven · rules-based</text>
-      <line x1="360" y1="58" x2="360" y2="86" stroke="#8b93a3" stroke-width="1.5" marker-end="url(#arr)"/>
-      <rect x="230" y="90" width="260" height="52" rx="9" fill="#16283f" stroke="#60a5fa" stroke-width="2"/>
-      <text x="360" y="112" text-anchor="middle" font-size="14" font-weight="700" fill="#e6e9ef">MASTER ACCOUNT</text>
-      <text x="360" y="130" text-anchor="middle" font-size="11" fill="#8b93a3">your first funded account — prove it here</text>
-      <line x1="360" y1="142" x2="360" y2="172" stroke="#8b93a3" stroke-width="1.5" marker-end="url(#arr)"/>
-      <rect x="272" y="176" width="176" height="40" rx="20" fill="#181b22" stroke="#2a2f3a"/>
-      <text x="360" y="194" text-anchor="middle" font-size="12.5" font-weight="600" fill="#e6e9ef">Trade copier</text>
-      <text x="360" y="209" text-anchor="middle" font-size="10.5" fill="#8b93a3">one fill in → same fill everywhere</text>
-      <line x1="300" y1="216" x2="105" y2="266" stroke="#8b93a3" stroke-width="1.5" marker-end="url(#arr)"/>
-      <line x1="335" y1="216" x2="278" y2="266" stroke="#8b93a3" stroke-width="1.5" marker-end="url(#arr)"/>
-      <line x1="385" y1="216" x2="442" y2="266" stroke="#8b93a3" stroke-width="1.5" marker-end="url(#arr)"/>
-      <line x1="420" y1="216" x2="615" y2="266" stroke="#8b93a3" stroke-width="1.5" marker-end="url(#arr)"/>
+      <rect x="255" y="12" width="210" height="46" rx="9" fill="var(--panel)" stroke="var(--accent)" stroke-width="1.5"/>
+      <text x="360" y="31" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text)">Your tested edge</text>
+      <text x="360" y="48" text-anchor="middle" font-size="11" fill="var(--muted)">backtested · paper-proven · rules-based</text>
+      <line x1="360" y1="58" x2="360" y2="86" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#arr)"/>
+      <rect x="230" y="90" width="260" height="52" rx="9" fill="var(--accent-soft, #e2eafc)" stroke="var(--accent)" stroke-width="2"/>
+      <text x="360" y="112" text-anchor="middle" font-size="14" font-weight="700" fill="var(--text)">MASTER ACCOUNT</text>
+      <text x="360" y="130" text-anchor="middle" font-size="11" fill="var(--muted)">your first funded account — prove it here</text>
+      <line x1="360" y1="142" x2="360" y2="172" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#arr)"/>
+      <rect x="272" y="176" width="176" height="40" rx="20" fill="var(--panel)" stroke="var(--border)"/>
+      <text x="360" y="194" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--text)">Trade copier</text>
+      <text x="360" y="209" text-anchor="middle" font-size="10.5" fill="var(--muted)">one fill in → same fill everywhere</text>
+      <line x1="300" y1="216" x2="105" y2="266" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#arr)"/>
+      <line x1="335" y1="216" x2="278" y2="266" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#arr)"/>
+      <line x1="385" y1="216" x2="442" y2="266" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#arr)"/>
+      <line x1="420" y1="216" x2="615" y2="266" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#arr)"/>
       <g font-size="12" font-weight="700">
-        <rect x="20" y="270" width="170" height="58" rx="9" fill="#181b22" stroke="#2a2f3a"/>
-        <text x="105" y="292" text-anchor="middle" fill="#e6e9ef">1 · Tradeify Growth</text>
-        <text x="105" y="309" text-anchor="middle" font-size="10.5" font-weight="400" fill="#8b93a3">first copy · $500 min payout</text>
-        <rect x="198" y="270" width="160" height="58" rx="9" fill="#181b22" stroke="#2a2f3a"/>
-        <text x="278" y="292" text-anchor="middle" fill="#e6e9ef">2 · Lucid Flex/Pro</text>
-        <text x="278" y="309" text-anchor="middle" font-size="10.5" font-weight="400" fill="#8b93a3">funded by Tradeify payout</text>
-        <rect x="366" y="270" width="152" height="58" rx="9" fill="#181b22" stroke="#2a2f3a"/>
-        <text x="442" y="292" text-anchor="middle" fill="#e6e9ef">3 · MFF Pro</text>
-        <text x="442" y="309" text-anchor="middle" font-size="10.5" font-weight="400" fill="#8b93a3">$100K SIM cap · home runs</text>
-        <rect x="526" y="270" width="176" height="58" rx="9" fill="#181b22" stroke="#2a2f3a"/>
-        <text x="614" y="292" text-anchor="middle" fill="#e6e9ef">4 · Take Profit Trader</text>
-        <text x="614" y="309" text-anchor="middle" font-size="10.5" font-weight="400" fill="#8b93a3">daily payouts · veteran layer</text>
+        <rect x="20" y="270" width="170" height="58" rx="9" fill="var(--panel)" stroke="var(--border)"/>
+        <text x="105" y="292" text-anchor="middle" fill="var(--text)">1 · Tradeify Growth</text>
+        <text x="105" y="309" text-anchor="middle" font-size="10.5" font-weight="400" fill="var(--muted)">first copy · $500 min payout</text>
+        <rect x="198" y="270" width="160" height="58" rx="9" fill="var(--panel)" stroke="var(--border)"/>
+        <text x="278" y="292" text-anchor="middle" fill="var(--text)">2 · Lucid Flex/Pro</text>
+        <text x="278" y="309" text-anchor="middle" font-size="10.5" font-weight="400" fill="var(--muted)">funded by Tradeify payout</text>
+        <rect x="366" y="270" width="152" height="58" rx="9" fill="var(--panel)" stroke="var(--border)"/>
+        <text x="442" y="292" text-anchor="middle" fill="var(--text)">3 · MFF Pro</text>
+        <text x="442" y="309" text-anchor="middle" font-size="10.5" font-weight="400" fill="var(--muted)">$100K SIM cap · home runs</text>
+        <rect x="526" y="270" width="176" height="58" rx="9" fill="var(--panel)" stroke="var(--border)"/>
+        <text x="614" y="292" text-anchor="middle" fill="var(--text)">4 · Take Profit Trader</text>
+        <text x="614" y="309" text-anchor="middle" font-size="10.5" font-weight="400" fill="var(--muted)">daily payouts · veteran layer</text>
       </g>
-      <line x1="105" y1="328" x2="105" y2="368" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arrg)"/>
-      <line x1="278" y1="328" x2="278" y2="368" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arrg)"/>
-      <line x1="442" y1="328" x2="442" y2="368" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arrg)"/>
-      <line x1="614" y1="328" x2="614" y2="368" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arrg)"/>
-      <rect x="150" y="372" width="420" height="44" rx="9" fill="#14301f" stroke="#22c55e" stroke-width="1.5"/>
-      <text x="360" y="391" text-anchor="middle" font-size="13" font-weight="700" fill="#22c55e">Payouts → fund more accounts (target 4–5 concurrent)</text>
-      <text x="360" y="407" text-anchor="middle" font-size="10.5" fill="#8b93a3">compounding accounts, not size — capped risk per trade on every one</text>
+      <line x1="105" y1="328" x2="105" y2="368" stroke="var(--buy, var(--green, #177a4c))" stroke-width="1.5" marker-end="url(#arrg)"/>
+      <line x1="278" y1="328" x2="278" y2="368" stroke="var(--buy, var(--green, #177a4c))" stroke-width="1.5" marker-end="url(#arrg)"/>
+      <line x1="442" y1="328" x2="442" y2="368" stroke="var(--buy, var(--green, #177a4c))" stroke-width="1.5" marker-end="url(#arrg)"/>
+      <line x1="614" y1="328" x2="614" y2="368" stroke="var(--buy, var(--green, #177a4c))" stroke-width="1.5" marker-end="url(#arrg)"/>
+      <rect x="150" y="372" width="420" height="44" rx="9" fill="var(--green-soft, #e2f2e7)" stroke="var(--buy, var(--green, #177a4c))" stroke-width="1.5"/>
+      <text x="360" y="391" text-anchor="middle" font-size="13" font-weight="700" fill="var(--buy, var(--green, #177a4c))">Payouts → fund more accounts (target 4–5 concurrent)</text>
+      <text x="360" y="407" text-anchor="middle" font-size="10.5" fill="var(--muted)">compounding accounts, not size — capped risk per trade on every one</text>
     </svg>
     <div class="databox"><b>THE CATCH</b><br>A copier multiplies mistakes at the same speed as
     profits, and every firm's drawdown rules differ (EOD-trailing vs intraday, daily-loss
