@@ -87,6 +87,8 @@
       <div><label>Reset price ($)</label><input id="reset_price" type="number" value="95"></div>
       <div><label>Profit target ($)</label><input id="profit_target" type="number" value="9000"></div>
       <div><label>Trailing DD, EOD ($)</label><input id="trailing_dd" type="number" value="5000"></div>
+      <div><label>Trail locks at start bal <span class="hint">(TopStep-style; Growth keeps rising)</span></label>
+        <select id="trail_stops_at_start"><option value="0" selected>No — keeps rising (Growth)</option><option value="1">Yes — locks at start</option></select></div>
       <div><label>Daily loss limit ($)</label><input id="daily_loss_limit" type="number" value="3750"></div>
     </div>
     <div class="row">
@@ -158,6 +160,10 @@ const tile = (k, v, cls='') =>
   `<div class="tile"><div class="k">${k}</div><div class="v ${cls}">${v ?? '—'}</div></div>`;
 const median = a => { const s = [...a].sort((x, y) => x - y); return s[Math.floor(s.length / 2)]; };
 const mean = a => a.reduce((x, y) => x + y, 0) / a.length;
+// Tradeify Growth's trail keeps rising above the start balance; TopStep-style
+// trails lock at start. Getting this wrong overstates pass odds by ~19%.
+const bustFloor = (hwm, R) =>
+  R.trail_stops_at_start ? Math.min(hwm - R.trailing_dd, 0) : hwm - R.trailing_dd;
 
 function dayPnl(r, s) {
   let p = 0;
@@ -171,7 +177,7 @@ function simEval(r, R, s, maxDays = 250) {
   for (let d = 1; d <= maxDays; d++) {
     let pnl = Math.max(dayPnl(r, s), -R.daily_loss_limit);
     bal += pnl;
-    if (bal <= Math.min(hwm - R.trailing_dd, 0)) return ['bust', d];
+    if (bal <= bustFloor(hwm, R)) return ['bust', d];
     if (bal >= R.profit_target) return ['pass', d];
     hwm = Math.max(hwm, bal);
   }
@@ -184,7 +190,7 @@ function simFunded(r, R, s, maxDays = 500) {
   for (let d = 1; d <= maxDays; d++) {
     let pnl = Math.max(dayPnl(r, s), -R.daily_loss_limit);
     bal += pnl;
-    if (bal <= Math.min(hwm - R.trailing_dd, 0)) return [withdrawn, nPay, first, d];
+    if (bal <= bustFloor(hwm, R)) return [withdrawn, nPay, first, d];
     hwm = Math.max(hwm, bal);
     if (pnl >= R.win_day_min) winDays++;
     best = Math.max(best, pnl);
@@ -238,7 +244,7 @@ function ladder(R, s, bankroll, horizon, maxEvals, maxFunded, nSims = 1500) {
       for (const e of [...evals]) {
         const pnl = Math.max(dayPnl(r, s), -R.daily_loss_limit);
         e.bal += pnl;
-        if (e.bal <= Math.min(e.hwm - R.trailing_dd, 0)) {
+        if (e.bal <= bustFloor(e.hwm, R)) {
           evals.splice(evals.indexOf(e), 1);
           if (cash >= R.reset_price) { cash -= R.reset_price; evals.push({bal: 0, hwm: 0}); }
         } else if (e.bal >= R.profit_target) {
@@ -252,7 +258,7 @@ function ladder(R, s, bankroll, horizon, maxEvals, maxFunded, nSims = 1500) {
       for (const f of [...fund]) {
         const pnl = Math.max(dayPnl(r, s), -R.daily_loss_limit);
         f.bal += pnl;
-        if (f.bal <= Math.min(f.hwm - R.trailing_dd, 0)) { fund.splice(fund.indexOf(f), 1); continue; }
+        if (f.bal <= bustFloor(f.hwm, R)) { fund.splice(fund.indexOf(f), 1); continue; }
         f.hwm = Math.max(f.hwm, f.bal);
         if (pnl >= R.win_day_min) f.wd++;
         f.best = Math.max(f.best, pnl);
@@ -288,7 +294,8 @@ function run() {
   const v = Object.fromEntries(IDS.map(i => [i, +$(i).value]));
   const s = {win_rate: v.win_rate, r_mult: v.r_mult, risk: v.risk,
              trades_per_day: v.trades_per_day, cost_per_trade: v.cost_per_trade};
-  const R = {...v, payout_caps: [2500, 3000, 4000, 5000]};
+  const R = {...v, payout_caps: [2500, 3000, 4000, 5000],
+             trail_stops_at_start: $('trail_stops_at_start').value === '1'};
   const e = economics(R, s);
   const l = ladder(R, s, v.bankroll, v.horizon_days, v.max_concurrent_evals, v.max_concurrent_funded);
   $('results').style.display = '';
