@@ -1,0 +1,53 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Full Story: why we built a lie detector before a trading bot — Stock Market Elephant</title>
+<meta name="description" content="The motivation, the process, and the machinery behind a fully honest attempt at prop-firm futures trading — from zero capital to a certified edge.">
+<style>
+:root{--bg:#0f1115;--panel:#181b22;--border:#2a2f3a;--text:#e6e9ef;--muted:#8b93a3;--accent:#60a5fa;--green:#22c55e;--red:#ef4444}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.7 -apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:680px;margin:0 auto;padding:32px 20px 70px}
+.top{display:flex;gap:10px;margin-bottom:26px;font-size:13.5px}.top a{color:var(--muted);text-decoration:none;font-weight:600}.top a:hover{color:var(--accent)}
+.kicker{font:600 11px ui-monospace,monospace;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:6px}
+h1{font-size:29px;line-height:1.2;margin:0 0 6px}
+.date{color:var(--muted);font-size:13px;margin-bottom:24px}
+p{margin:0 0 15px;max-width:63ch} h2{font-size:20px;margin:30px 0 8px}
+.pull{border-left:3px solid var(--accent);background:var(--panel);border-radius:0 8px 8px 0;padding:12px 16px;margin:18px 0;font-size:15px}
+ul{padding-left:22px;margin:0 0 15px}li{margin-bottom:7px;max-width:60ch}
+.next{margin-top:34px;border-top:1px solid var(--border);padding-top:16px;font-size:14px}.next a{color:var(--accent);text-decoration:none}
+.foot{margin-top:30px;font-size:12px;color:var(--muted);max-width:62ch}
+a{color:var(--accent)}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">🐘 Stock Market Elephant</a><span style="color:var(--border)">/</span><a href="blog.html">The Graveyard Series</a></div>
+<div class="kicker">The graveyard series · prologue</div>
+<h1>The full story: why we built a lie detector before a trading bot</h1>
+<div class="date">Jul 21, 2026 · 11 min read</div>
+
+<h2>The motivation</h2>
+<p>This project started with a simple, slightly heretical observation: the prop-firm industry has changed what "capital" means for a trader. You no longer need $25,000 and a margin account. You need roughly the price of a video game — an evaluation fee — and an edge that actually exists. Firms will rent you $50,000 of buying power all day long; what they're really selling is a test, and what they're really buying is your failure rate.</p>
+<p>Which reframes the entire problem. If accounts are cheap and capital is rented, the scarce resource isn't money — it's <i>a verified edge</i>. Not a strategy that looks good. Not a strategy someone sells you. A strategy you can defend to a hostile statistician, because the eval structure means you'll pay for every illusion in fees, resets, and months of your life.</p>
+<p>So before we let a single order near a market, we made a decision that shaped everything after it: <b>we would build the machinery for catching self-deception first, and the trading strategy second.</b> The strategy is maybe 400 lines of code. The apparatus for proving whether it's real is several times that. We think that ratio is correct, and the fact that it's unusual is most of why retail trading looks the way it does.</p>
+
+<h2>The rules we set before starting</h2>
+<ul>
+<li><b>Real data or nothing.</b> We bought every trade the exchange ever recorded for our market — seven-plus years of NASDAQ micro futures — rather than trusting free chart feeds. It cost less than one evaluation fee.</li>
+<li><b>Realistic costs on every simulated trade.</b> Commissions, fees, and slippage, baked in from the first backtest. (Read the vendor autopsy to see what leaving these out does.)</li>
+<li><b>Pessimistic fills.</b> When a price bar touches both our stop and our target, we assume the stop hit first. Ambiguous bars don't trade. If the backtest must err, it errs against us.</li>
+<li><b>Pre-registered verdicts.</b> Before every experiment, we wrote down what would count as success and what we'd do on failure — then we couldn't move the goalposts when the results came in ugly.</li>
+<li><b>Negative results get recorded with the same care as positive ones.</b> Our research log has more funerals than victories, on purpose. An idea, once honestly killed, stays dead — nobody gets to re-litigate it a month later because a YouTube video was persuasive.</li>
+<li><b>A human clicks every trade.</b> The system signals; a person executes. Nothing arms itself. Automation earns trust in stages, never assumes it.</li>
+</ul>
+
+<h2>The process, honestly told</h2>
+<p><b>Week one: the machine.</b> We built the backtesting engine and immediately did the thing that felt most uncomfortable: hired an adversarial review of our own code — multiple independent passes hunting for bugs that flatter results. It found thirteen, including one that quietly inflated our headline strategy by about 15%. Every published number you'll see came after those fixes, with a regression test pinning each bug shut. If you've never red-teamed your own backtester, your results have an asterisk you haven't priced.</p>
+<p><b>Then: the gauntlet.</b> Every strategy idea — ours, borrowed, or bought — ran the same three tests: walk-forward (parameters chosen on the past, traded blind on the next quarter), purged cross-validation (does the edge exist across eras, with leak-proof gaps between train and test), and combinatorial CPCV producing the two numbers this series keeps returning to: the Probability of Backtest Overfitting, and the deflated Sharpe ratio that charges you for every idea you tried. As a control, we fed the gauntlet pure random noise: it correctly scored it as garbage. A lie detector you haven't tested on lies is just a mood ring.</p>
+<p><b>Then: the graveyard.</b> Parts 2 through 6 of this series. Roughly a dozen enhancement ideas — pullback entries, volume confirmation, trend filters, tight stops, clever exits, an intraday session no one had reason to doubt, even institutional order-flow data we bought specifically to test one hypothesis. The kill rate was about ninety percent. That number felt brutal in the moment and feels like the entire point in retrospect: the gauntlet's job is to be a place where ideas die cheaply, so they don't die expensively in a funded account.</p>
+<p><b>Throughout: automation with discipline.</b> A nightly worker grinds a research backlog while we sleep — every item carrying a pre-written, data-backed test that defines "done." It merges its own work only when the full test suite and the item's own verification pass; otherwise the work waits on a branch for review. Twice it refused to merge because it couldn't reproduce a number we'd claimed — and it was right, and the fix (committing the exact experiment grid to the repository, forever) made the whole project reproducible by a stranger. We recommend being audited by your own robots. They have no feelings to spare.</p>
+
+<h2>What we actually believe now</h2>
+<p>After all of it, our certified edge is almost embarrassingly plain: a morning breakout system with one filter, riding winners into the close, sized by written rules. Its honest profile is a thin, real edge — a coin weighted a few points past fair, flipped four times a week. No secret. No indicator stack. The entire value lives in two places the sales pages never mention: the <i>verification</i> that the coin is actually weighted, and the <i>discipline machinery</i> that keeps a human from un-weighting it mid-drawdown.</p>
+<div class="pull">The uncomfortable summary of months of work: finding an edge took a week. Proving it wasn't a lie took everything else. And the market still holds the only vote that counts — which is why the final stage of this project is a pre-registered live paper campaign, with decision rules written down before the first trade.</div>
+<p>This series exists because every part of that paragraph is checkable. The methods are in the posts. The math is in the <a href="ev.html">calculator</a>. The failures are documented next to the successes. We are not selling a strategy — we're demonstrating a standard, because we think the standard is the actual edge.</p>
+
+<div class="next">Begin the series: <a href="why-most-backtests-lie.html">Part 1 — Why most backtests lie</a></div>
+<div class="foot">Educational content only — not financial advice; no performance promised or implied. All research described uses real CME MNQ data with realistic costs; backtests differ from live trading. Futures trading involves substantial risk of loss.</div>
+</div></body></html>
