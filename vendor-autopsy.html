@@ -1,0 +1,62 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>We bought a vendor ORB strategy and audited the trade log — Stock Market Elephant</title>
+<meta name="description" content="A 76% win rate, a beautiful equity curve, and a $0 commission column. Anatomy of a strategy that sells better than it trades.">
+<style>
+:root{--bg:#0f1115;--panel:#181b22;--border:#2a2f3a;--text:#e6e9ef;--muted:#8b93a3;--accent:#60a5fa;--green:#22c55e;--red:#ef4444}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 -apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:680px;margin:0 auto;padding:32px 20px 70px}
+.top{display:flex;gap:10px;margin-bottom:26px;font-size:13.5px}.top a{color:var(--muted);text-decoration:none;font-weight:600}.top a:hover{color:var(--accent)}
+.kicker{font:600 11px ui-monospace,monospace;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:6px}
+h1{font-size:28px;line-height:1.2;margin:0 0 6px}
+.date{color:var(--muted);font-size:13px;margin-bottom:24px}
+p{margin:0 0 15px;max-width:62ch} h2{font-size:19px;margin:28px 0 8px}
+table{border-collapse:collapse;font:13px ui-monospace,monospace;margin:12px 0;width:100%}
+th,td{text-align:right;padding:6px 10px;border-bottom:1px solid var(--border)}th{color:var(--muted);font-weight:500}
+th:first-child,td:first-child{text-align:left}
+.g{color:var(--green)}.r{color:var(--red)}
+.pull{border-left:3px solid var(--accent);background:var(--panel);border-radius:0 8px 8px 0;padding:12px 16px;margin:16px 0;font-size:15px}
+.next{margin-top:34px;border-top:1px solid var(--border);padding-top:16px;font-size:14px}.next a{color:var(--accent);text-decoration:none}
+.foot{margin-top:30px;font-size:12px;color:var(--muted);max-width:62ch}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">🐘 Stock Market Elephant</a><span style="color:var(--border)">/</span><a href="blog.html">The Graveyard Series</a></div>
+<div class="kicker">The graveyard series · bonus autopsy</div>
+<h1>We bought a vendor ORB strategy and audited the trade log</h1>
+<div class="date">Oct 21, 2026 · 6 min read</div>
+
+<p>A reader sent us a paid TradingView opening-range-breakout strategy — the kind sold with a glowing equity curve and one giant number on the sales page: <b>76% win rate</b>. It looked more profitable than the system we'd spent weeks building and gate-testing. So we exported its full one-year trade log — 331 trades on NASDAQ micro futures — and did what nobody does before buying: read it.</p>
+
+<h2>The sales page vs the CSV</h2>
+<table>
+<tr><th></th><th>What's advertised</th><th>What the log says</th></tr>
+<tr><td>Win rate</td><td class="g">76.4%</td><td>real — but keep reading</td></tr>
+<tr><td>Average winner</td><td>—</td><td>+23.5 points</td></tr>
+<tr><td>Average loser</td><td>—</td><td class="r">−69.6 points</td></tr>
+<tr><td>Profit factor</td><td>—</td><td>1.10</td></tr>
+<tr><td>Year's profit</td><td class="g">$2,875</td><td>…trading up to <b>12 contracts</b></td></tr>
+<tr><td>Profit per contract</td><td>—</td><td class="r">$3.10 per trade</td></tr>
+<tr><td>Commission column</td><td>—</td><td class="r">$0.00, all 331 rows</td></tr>
+<tr><td>Max drawdown</td><td>—</td><td>$2,853 — as large as the profit</td></tr>
+</table>
+
+<p>Win 76% of the time, win small, and lose <i>three times bigger</i> when you lose. That's not an edge with a high win rate; it's the win rate <i>purchased from</i> the edge — the exact inversion we demonstrated in <a style="color:var(--accent)" href="win-rate-vanity.html">part 4</a>, running in a paid product.</p>
+
+<h2>The commission column is doing the heavy lifting</h2>
+<p>331 trades at an average of ~3.4 contracts is roughly 1,100 contract round-trips. At realistic micro-futures costs that's about <b>$1,950 in commissions and exchange fees the backtest never paid</b>. Subtract it and the year's $2,875 becomes roughly $900 — before slippage, which at this trade frequency comfortably erases the rest. The honest expectation of this strategy is approximately zero, presented as a winner by a checkbox left unticked.</p>
+
+<h2>The tell that should end the conversation: zero-bar trades</h2>
+<p><b>196 of 331 trades — 59% — enter and exit inside the same five-minute candle.</b> Backtesting platforms fill same-bar entries and exits at optimistic intrabar prices that no live order flow guarantees; it's the least falsifiable fill assumption in retail backtesting. When most of a system's trades live in that zone, the equity curve isn't evidence — it's rendering.</p>
+
+<div class="pull">Four checks that took us twenty minutes and would have cost the vendor his sale: (1) Is the commission column zero? (2) Divide profit by contracts traded. (3) Compare average winner to average loser. (4) Count same-bar round trips. Any one of these fails → walk away.</div>
+
+<h2>The sizing tell</h2>
+<p>Position sizes swing from 1 to 12 contracts with no stated rule — and the biggest sizes cluster after losing streaks. Whatever the intent, on a prop account that pattern has a name: one of its −70-point losses at size 12 is a −$1,680 day, an instant daily-loss-limit violation at most firms. A strategy can be harmless in a vacuum and undeployable inside the rules you'd actually trade under.</p>
+
+<h2>The quiet vindication</h2>
+<p>Strip the presentation away and the vendor's system made independent, real-money-adjacent choices we had tested and rejected on seven years of data: a shorter opening range (our data ranks it below 20–30 minutes), always trading both directions (fails selection tests), and profit-taking tuned for win rate (the part-4 trap). The audit didn't just fail their strategy — it out-of-sample confirmed our graveyard. Every grave got a second flower.</p>
+
+<p>The uncomfortable economics: a 76% win rate with a green curve will outsell a 51% win rate with honest gates every single time. Which is why this series exists. Audit the log. It's always in the log.</p>
+
+<div class="next">Start of series: <a href="why-most-backtests-lie.html">Part 1 — Why most backtests lie</a> · The math tool: <a href="ev.html">Prop Firm EV Calculator</a></div>
+<div class="foot">Educational content only — not financial advice; no vendor is identified and results describe one exported log. All comparative results are backtests on real CME MNQ data with realistic costs; backtests differ from live trading. Futures involve substantial risk of loss.</div>
+</div></body></html>
