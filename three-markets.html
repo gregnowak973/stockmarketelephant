@@ -79,7 +79,7 @@ code{font:.85em ui-monospace,monospace;background:var(--panel);padding:1px 6px;b
 <table>
 <tr><th>book (2021–2026)</th><th>Sharpe</th><th>max drawdown</th><th>eval pass rate*</th><th>median days to pass*</th></tr>
 <tr><td>MNQ alone</td><td>0.81</td><td>−$4,567</td><td>48.7%</td><td>108</td></tr>
-<tr><td>MNQ + crude</td><td class="g">1.02</td><td class="g">−$4,165</td><td class="g">56.4%</td><td class="g">101</td></tr>
+<tr><td>MNQ + crude</td><td class="g">1.00</td><td class="g">−$4,295</td><td class="g">55.8%</td><td class="g">102</td></tr>
 </table>
 <div class="cap">*50K-eval Monte Carlo, one micro each. With the crude leg sized up to equalize risk, the median time-to-pass drops to ~64 days — but that sizing hasn't cleared certification, so we quote the conservative row.</div>
 <p>The pass rate barely moves — eval geometry mostly doesn't care, as we've written before — but the <em>drawdown improves while profit nearly doubles</em>, because the two streams stumble on different days. That's the one free lunch in this business, and you can only buy it with a genuinely different signal.</p>
@@ -99,6 +99,17 @@ code{font:.85em ui-monospace,monospace;background:var(--panel);padding:1px 6px;b
 <p><b>MNQ remains the champion, and it isn't close.</b> Its out-of-sample mean is three times crude's, its overfit probability is zero, its history is longer, and it has survived two adversarial audits without moving a cent. Crude earns a research seat — uncorrelated, structurally sensible, hypothesis-confirmed — but it trades nothing until it clears the same gates the champion did: slippage stress, recent-window checks, and a paper period. And it carries an honest asterisk we won't hide: a short-only crude strategy tested mostly across 2021–2026 is partly a bet on one oil regime. Five years is the minimum we'd call evidence and the maximum crude's micro contract can give us.</p>
 <div class="pull">One market gave us a champion. One gave us a diversifier-in-waiting. One gave us nothing — twice, for two different reasons, and the second "nothing" was worth more than the first, because it was true.</div>
 
+<h2>Postscript — Sep 10: crude fails its prerequisites</h2>
+<p>This series doesn't edit history, so the chapter above stands as written — but the story moved overnight, and you deserve the ending. Before any signal earns real money we require three things beyond the overfit gate: survive extra slippage, work on recent data, and add value at realistic size. Our overnight verification run put the crude candidate through all three. It failed all three.</p>
+<table>
+<tr><th>prerequisite</th><th>MNQ champion</th><th>MCL candidate</th></tr>
+<tr><td>+1 tick/side slippage</td><td class="g">+0.65</td><td class="r">−0.05</td></tr>
+<tr><td>+2 ticks/side</td><td class="g">+0.60</td><td class="r">−0.32</td></tr>
+<tr><td>2024→now window (CPCV PBO)</td><td class="g">0%</td><td class="r">60% — gate fail</td></tr>
+<tr><td>recent-window P&amp;L</td><td class="g">holds</td><td class="r">+$287 in 2.7 yrs</td></tr>
+</table>
+<p>One extra tick of slippage per side — the difference between a mid-fill and a realistic fill in crude — takes the entire edge to zero. And the profit that impressed us was concentrated in 2021–2023; the last 2.7 years are flat. A diversifier that only works in the past, at fills you won't get, is not a diversifier. <b>No live or paper slot.</b> Per our no-tuning rule, we did not go searching for a variant that survives — that search is how graveyards get robbed.</p>
+<p>So the scoreboard's bottom line sharpens: three markets went in, and exactly one strategy came out. The uncorrelated-second-signal idea remains correct in principle — the combined-book math above is real — but the signal that fills that seat hasn't been found yet. When it is, it will have passed everything you just watched crude fail.</p>
 <div class="next">← <a href="the-numbers.html">The numbers, in pictures</a> · <a href="blog.html">All chapters</a></div>
 <div class="foot">Method notes: identical engine and cost model across instruments (per-contract commissions + slippage baked in); fixed 216-configuration pre-declared grid per market; CPCV with 6 groups × 2 test blocks and a 14-session purge/embargo; PBO by rank degradation across paths; deflated Sharpe with effective-trials clustering. Nothing on this page is trading advice; everything on it is reproducible from the methods described in this series.</div>
 </div></body></html>
